@@ -10,10 +10,10 @@ type RedisClient struct {
 	cli *redis.Client
 }
 
-func (c *RedisClient) InitClient(ctx context.Context, address, password string) error {
+func (c *RedisClient) InitClient(ctx context.Context, address, pw string) error {
 	r := redis.NewClient(&redis.Options{
 		Addr:     address,
-		Password: password, //no password
+		Password: pw, //no password
 		DB:       0,        //default db
 	})
 	//test connection
@@ -32,12 +32,12 @@ func (c *RedisClient) GetMsgByID(ctx context.Context, roomID string, start, end 
 		err         error
 	)
 
-	if reverse {
-		//descending order
-		rawMessages, err = c.cli.ZRevRange(ctx, roomID, start, end).Result()
-	} else {
+	if !reverse {
 		//ascending order
 		rawMessages, err = c.cli.ZRange(ctx, roomID, start, end).Result()
+	} else {
+		//descending order
+		rawMessages, err = c.cli.ZRevRange(ctx, roomID, start, end).Result()
 	}
 
 	if err != nil {

@@ -18,7 +18,7 @@ var (
 func main() {
 	ctx := context.Background()
 
-	err := rdb.InitClient(ctx, "redis:6379", "")
+	error := rdb.InitClient(ctx, "redis:6379", "")
 	if err != nil {
 		errMsg := fmt.Sprintf("failed: , err: %v", err)
 		log.Fatal(errMsg)
@@ -29,11 +29,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	svr := rpc.NewServer(new(IMServiceImpl), server.WithRegistry(r), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+	server := rpc.NewServer(new(IMServiceImpl), server.WithRegistry(r), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: "demo.rpc.server",
 	}))
 
-	err = svr.Run()
+	err = server.Run()
 	if err != nil {
 		log.Println(err.Error())
 	}
